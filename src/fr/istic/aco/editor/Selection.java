@@ -56,5 +56,8 @@ public interface Selection {
      */
     void setEndIndex(int endIndex);
 
+    void setEngine(Engine engine);
+
+
 
 }

@@ -1,15 +1,32 @@
 package fr.istic.aco.editor;
 
+import java.util.Scanner;
+import java.util.Iterator;
+
 public class EngineImpl implements Engine {
+    private String buffer;
+    private String clipBoard;
+    private Selection selection;
+
+    public EngineImpl(){
+        buffer="";
+        clipBoard="";
+        selection= new SelectionImpl();
+        selection.setEngine(this);
+    }
+
+    public void setClipBoard(String texte){
+        this.clipBoard= texte;
+    }
+
     /**
      * Provides access to the selection control object
      *
-     * @return the selection object
+     * @return the selection object (to review !!)
      */
     @Override
     public Selection getSelection() {
-        // TODO
-        return null;
+            return this.selection;
     }
 
     /**
@@ -19,8 +36,7 @@ public class EngineImpl implements Engine {
      */
     @Override
     public String getBufferContents() {
-        // TODO
-        return null;
+        return this.buffer;
     }
 
     /**
@@ -30,8 +46,7 @@ public class EngineImpl implements Engine {
      */
     @Override
     public String getClipboardContents() {
-        // TODO
-        return null;
+        return this.clipBoard;
     }
 
     /**
@@ -41,7 +56,10 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void cutSelectedText() {
-        // TODO
+        StringBuffer buffer= new StringBuffer();
+        buffer.append(this.getBufferContents());
+        buffer.replace(this.getSelection().getBeginIndex(),this.getSelection().getEndIndex(),"");
+        this.setBufferContains(buffer.toString());
     }
 
     /**
@@ -51,7 +69,19 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void copySelectedText() {
-        // TODO
+
+        StringBuffer clipBoard= new StringBuffer();
+        clipBoard.append(this.getBufferContents());
+        int indexDebutSelection= this.getSelection().getBeginIndex();
+        int indexFinSelection= this.getSelection().getEndIndex();
+        StringBuffer copie= new StringBuffer();
+
+        for(int i=indexDebutSelection;i<indexFinSelection;i++){
+            copie.append(clipBoard.toString().charAt(i));
+        }
+
+        this.setClipBoardContains(copie.toString());
+        return ;
     }
 
     /**
@@ -60,7 +90,13 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void pasteClipboard() {
-        // TODO
+        StringBuffer clipBoard= new StringBuffer();
+        clipBoard.append(this.getClipboardContents());
+        this.setClipBoardContains(clipBoard.toString());
+        this.getSelection().setBeginIndex(0);
+        this.getSelection().setEndIndex(this.getClipboardContents().length()-1);
+        this.getSelection().setEngine(this);
+        return ;
     }
 
     /**
@@ -70,7 +106,11 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void insert(String s) {
-
+        StringBuffer buffer= new StringBuffer();
+        buffer.append(this.getBufferContents());
+        buffer.replace(this.getSelection().getBeginIndex(),this.getSelection().getEndIndex(),s);
+        this.setBufferContains(buffer.toString());
+        return ;
     }
 
     /**
@@ -78,6 +118,27 @@ public class EngineImpl implements Engine {
      */
     @Override
     public void delete() {
-
+       StringBuffer buffer= new StringBuffer();
+       buffer.append(this.getBufferContents());
+       buffer.delete(this.getSelection().getBeginIndex(),this.getSelection().getEndIndex());
+       this.setBufferContains(buffer.toString());
+       return ;
     }
+
+    @Override
+    public void setBufferContains(String texte){
+        this.buffer=texte;
+    }
+
+    @Override
+    public void setClipBoardContains(String texte){
+        this.clipBoard=texte;
+    }
+
+    @Override
+    public void setSelection(int beginIndex,int endIndex){
+        selection.setBeginIndex(beginIndex);
+        selection.setEndIndex(endIndex);
+    }
+
 }
