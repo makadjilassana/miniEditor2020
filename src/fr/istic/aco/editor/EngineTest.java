@@ -1,6 +1,5 @@
 package fr.istic.aco.editor;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
